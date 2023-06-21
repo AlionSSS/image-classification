@@ -1,7 +1,6 @@
 import os
 from PIL import Image
 from torch.utils.data import Dataset
-from torch.utils.data.dataset import T_co
 from torchvision import transforms as T
 
 
@@ -47,7 +46,7 @@ class DogCatDataset(Dataset):
                 T.Normalize(mean=(0.485, 0.456, 0.406), std=(0.229, 0.224, 0.225))
             ])
 
-    def __getitem__(self, index) -> T_co:
+    def __getitem__(self, index):
         img_url = self.img_urls[index]
         if self.mode == "test":
             label = img_url.split(".")[-2]
