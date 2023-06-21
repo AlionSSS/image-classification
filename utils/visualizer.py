@@ -38,5 +38,5 @@ class Visualizer(object):
         self.log_text += f"[{time.strftime('%m%d_%H%M%S')}] {info} <br>"
         self.vis.text(self.log_text, win)
 
-    def __getattribute__(self, name: str):
+    def __getattr__(self, name: str):
         return getattr(self.vis, name)
