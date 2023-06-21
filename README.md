@@ -39,7 +39,7 @@ nohup python -m visdom.server &
 python main.py train \
 --model='ResNet34' \
 --load-model-path='checkpoints/resnet34_20230621_23:39:02.pth' \
---train-data-root=dogs-vs-cats-redux-kernels-edition/train \
+--train-data-root='dogs-vs-cats-redux-kernels-edition/train' \
 --max-epoch=30 \
 --batch-size=64 \
 --lr=0.005
@@ -51,6 +51,6 @@ python main.py train \
 python main.py train \
 --model='ResNet34' \
 --load-model-path='checkpoints/resnet34_20230621_23:39:02.pth' \
---test-data-root=dogs-vs-cats-redux-kernels-edition/test \
+--test-data-root='dogs-vs-cats-redux-kernels-edition/test' \
 --batch-size=64
 ```
