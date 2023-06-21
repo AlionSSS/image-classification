@@ -1,9 +1,13 @@
-import torch.optim
+import os
+from typing import Tuple
+
+import torch
 from torch.utils.data import DataLoader
 from torch import nn
 
 import fire
 import inspect
+import pandas as pd
 
 import models
 from config import DefaultConfig, ExtDefaultConfig
@@ -11,19 +15,7 @@ from data import DogCatDataset
 from utils import Visualizer
 
 opt = ExtDefaultConfig()
-# new_config = {'lr': 0.005, 'use_gpu': False, "xxx": 999}
-# opt.parse(**new_config)
 
-
-
-#
-# lr = opt.lr
-#
-# train_dataset = DogCatDataset(root_path=opt.train_data_root, mode="train")
-#
-# model = getattr(models, 'SqueezeNet')()
-# # model = eval("models.SqueezeNet")()
-# model.printxxx()
 
 def train(**kwargs):
     """
@@ -53,7 +45,7 @@ def train(**kwargs):
 
     previous_loss = 0.0
 
-    for epoch in range(1, opt.max_epoch):
+    for epoch in range(1, opt.max_epoch + 1):
         model.train()
         train_total_loss = 0.0
         train_avg_loss = 0.0
@@ -74,9 +66,10 @@ def train(**kwargs):
 
         model.save()
 
-        val_acc = val(model, val_loader, criterion)
+        val_loss, val_acc = val(model, val_loader, criterion)
+        vis.plot("val_loss", val_loss)
         vis.plot("val_acc", val_acc)
-        vis.log(f"epoch:{epoch}, lr:{opt.lr}, loss:{train_avg_loss}")
+        vis.log(f"epoch: {epoch}/{opt.max_epoch}, lr: {lr:.6f}, train_loss: {train_avg_loss:.4f}, val_loss: {val_loss:.4f}, val_acc: {val_acc:.4f}")
 
         # 如果损失变大，那就降低学习率
         if train_avg_loss > previous_loss:
@@ -86,7 +79,7 @@ def train(**kwargs):
         previous_loss = train_avg_loss
 
 
-def val(model: nn.Module, dataloader: DataLoader, criterion) -> float:
+def val(model: nn.Module, dataloader: DataLoader, criterion) -> Tuple[float, float]:
     """
     验证
     """
@@ -102,12 +95,12 @@ def val(model: nn.Module, dataloader: DataLoader, criterion) -> float:
 
             _, preds = torch.max(out, 1)
             total += y.size(0)
-            correct += (preds == y).sum()
+            correct += (preds == y).sum().item()
 
             valid_total_loss += loss.item()
-            if i % 10 == 0 or i == len(dataloader):
-                accurrcy = 100 * correct.item() / total
-    return accurrcy
+    avg_loss = valid_total_loss / len(dataloader)
+    accuracy = 100 * correct / total
+    return avg_loss, accuracy
 
 
 def test(**kwargs):
@@ -128,17 +121,21 @@ def test(**kwargs):
         model.load(opt.load_model_path)
     model.to(opt.device)
 
-    results = []
+    if os.path.isfile(opt.result_file):
+        os.remove(opt.result_file)
+
     model.eval()
     with torch.no_grad():
         for i, (X, y) in enumerate(test_loader, 1):
-            X, y = X.to(opt.device), y.to(opt.device)
-
+            X = X.to(opt.device)
             out = model(X)
             _, preds = torch.max(out, 1)
-            for xxx in zip(y, preds):
-                print(xxx)
 
+            local_df = pd.DataFrame(data={
+                'id': y,
+                'label': preds.tolist()
+            })
+            local_df.to_csv(opt.result_file, mode="append", index=False)
 
 def help():
     """
