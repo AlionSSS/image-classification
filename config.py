@@ -11,15 +11,15 @@ class DefaultConfig(object):
     load_model_path = None  # 加载预训练模型的路径，None表示不加载
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # 使用的设备，cpu或cuda
-    print_freq = 20  # 打印信息间隔的step数
+    print_freq = 10  # 打印信息间隔的step数
 
     debug_file = "/tmp/debug"
-    result_file = "result.csv"
+    result_file = "./results.csv"
 
     max_epoch = 10  # 训练的epoch数
-    batch_size = 128  # 训练每批大小
+    batch_size = 64  # 训练每批大小
     num_worker = 1  # 加载数据的worker进程数
-    lr = 0.1  # 学习率
+    lr = 0.005  # 学习率
     lr_decay = 0.95  # 学习率衰减
     weight_decay = 1e-4
 
