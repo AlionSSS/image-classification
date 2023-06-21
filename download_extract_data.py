@@ -24,12 +24,16 @@ def download_extract_data():
 
     if not os.path.exists(os.path.join(data_path, "train")):
         # 解压 train.zip
+        assert os.path.exists(data_train_zip_path), \
+            f"项目下不存在数据文件 {data_train_zip_path} ，请先正确完成父压缩包的解压"
         with zipfile.ZipFile(data_train_zip_path) as zfile:
             for f in tqdm(zfile.infolist(), desc=f"Extracting... {data_train_zip_path}"):
                 zfile.extract(f, data_path)
 
     if not os.path.exists(os.path.join(data_path, "test")):
         # 解压 test.zip
+        assert os.path.exists(data_test_zip_path), \
+            f"项目下不存在数据文件 {data_test_zip_path} ，请先正确完成父压缩包的解压"
         with zipfile.ZipFile(data_test_zip_path) as zfile:
             for f in tqdm(zfile.infolist(), desc=f"Extracting... {data_test_zip_path}"):
                 zfile.extract(f, data_path)
