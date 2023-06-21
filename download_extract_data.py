@@ -7,7 +7,23 @@ from tqdm import tqdm
 # 下载地址 https://www.kaggle.com/competitions/dogs-vs-cats-redux-kernels-edition/data
 # 保存到 ./dogs-vs-cats-redux-kernels-edition.zip
 
+def extract_zip(zip_path, target_path, alert_msg=None):
+    """
+    解药压缩包到指定路径
+    """
+
+    alert_msg = alert_msg if alert_msg else f"项目下不存在数据文件 {zip_path}"
+    assert os.path.exists(zip_path), alert_msg
+    with zipfile.ZipFile(zip_path) as zfile:
+        for f in tqdm(zfile.infolist(), desc=f"Extracting {zip_path}"):
+            zfile.extract(f, target_path)
+
+
 def download_extract_data():
+    """
+    解压下载好的数据
+    """
+
     download_url = "https://www.kaggle.com/competitions/dogs-vs-cats-redux-kernels-edition/data"
     data_path = "./dogs-vs-cats-redux-kernels-edition"
     data_zip_path = "./dogs-vs-cats-redux-kernels-edition.zip"
@@ -16,27 +32,16 @@ def download_extract_data():
 
     if not os.path.exists(data_path):
         # 解压
-        assert os.path.exists(data_zip_path), \
-            f"项目下不存在数据文件 {data_zip_path} ，请先下载（{download_url}） 或 将该压缩文件放置到项目根目录下"
-        with zipfile.ZipFile(data_zip_path) as zfile:
-            for f in tqdm(zfile.infolist(), desc=f"Extracting... {data_zip_path}"):
-                zfile.extract(f, data_path)
+        alert_msg = f"项目下不存在数据文件 {data_zip_path} ，请先下载（{download_url}） 或 将该压缩文件放置到项目根目录下"
+        extract_zip(data_zip_path, data_path, alert_msg)
 
     if not os.path.exists(os.path.join(data_path, "train")):
         # 解压 train.zip
-        assert os.path.exists(data_train_zip_path), \
-            f"项目下不存在数据文件 {data_train_zip_path} ，请先正确完成父压缩包的解压"
-        with zipfile.ZipFile(data_train_zip_path) as zfile:
-            for f in tqdm(zfile.infolist(), desc=f"Extracting... {data_train_zip_path}"):
-                zfile.extract(f, data_path)
+        extract_zip(data_train_zip_path, data_path)
 
     if not os.path.exists(os.path.join(data_path, "test")):
         # 解压 test.zip
-        assert os.path.exists(data_test_zip_path), \
-            f"项目下不存在数据文件 {data_test_zip_path} ，请先正确完成父压缩包的解压"
-        with zipfile.ZipFile(data_test_zip_path) as zfile:
-            for f in tqdm(zfile.infolist(), desc=f"Extracting... {data_test_zip_path}"):
-                zfile.extract(f, data_path)
+        extract_zip(data_test_zip_path, data_path)
 
 
 if __name__ == '__main__':
