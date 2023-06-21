@@ -135,7 +135,7 @@ def test(**kwargs):
                 'id': y,
                 'label': preds.tolist()
             })
-            local_df.to_csv(opt.result_file, mode="append", index=False)
+            local_df.to_csv(opt.result_file, mode="a", index=False)
 
 def help():
     """
