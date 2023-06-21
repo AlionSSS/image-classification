@@ -1,27 +1,32 @@
-import os
 import warnings
+
+import torch.cuda
 
 
 class DefaultConfig(object):
-    visdom_env = "default"
-    model = "SqueezeNet"
-    data_path = "dogs-vs-cats-redux-kernels-edition"
-    train_data_root = os.path.join(data_path, "train")
-    test_data_root = os.path.join(data_path, "test")
-    load_model_path = None
+    visdom_env = "default"  # Visdom的环境
+    model = "SqueezeNet"  # 使用的模型
+    train_data_root = "dogs-vs-cats-redux-kernels-edition/train"  # 训练集的路径
+    test_data_root = "dogs-vs-cats-redux-kernels-edition/test"  # 测试集的路径
+    load_model_path = None  # 加载预训练模型的路径，None表示不加载
 
-    use_gpu = True
-    print_freq = 20
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # 使用的设备，cpu或cuda
+    print_freq = 20  # 打印信息间隔的step数
 
     debug_file = "/tmp/debug"
     result_file = "result.csv"
 
-    max_epoch = 10
-    batch_size = 128
-    num_worker = 4
-    lr = 0.1
-    lr_decay = 0.95
-    weight_decay = 0.0001
+    max_epoch = 10  # 训练的epoch数
+    batch_size = 128  # 训练每批大小
+    num_worker = 1  # 加载数据的worker进程数
+    lr = 0.1  # 学习率
+    lr_decay = 0.95  # 学习率衰减
+    weight_decay = 1e-4
+
+
+class ExtDefaultConfig(DefaultConfig):
+    def __init__(self) -> None:
+        super().__init__()
 
     def parse(self, **kwargs):
         for k, v in kwargs.items():
@@ -31,6 +36,6 @@ class DefaultConfig(object):
 
     def print_attr(self):
         print("user config:")
-        for k, v in self.__class__.__dict__.items():
+        for k, v in self.__class__.__base__.__dict__.items():
             if not k.startswith("__"):
                 print("\t" + k + " = " + str(getattr(self, k)))
