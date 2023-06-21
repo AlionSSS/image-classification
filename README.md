@@ -1,5 +1,5 @@
 # image-classification
-- This is an AI project about image classification.
+- This is an AI project about image-classification.
 - models 
   - [x] ResNet34
   - [ ] SqueezeNet
