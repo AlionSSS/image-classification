@@ -44,6 +44,7 @@ def train(**kwargs):
     optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=opt.weight_decay)
 
     previous_loss = 0.0
+    best_val_acc = 0.0
 
     for epoch in range(1, opt.max_epoch + 1):
         model.train()
@@ -64,12 +65,16 @@ def train(**kwargs):
                 train_avg_loss = train_total_loss / i
                 vis.plot("loss", train_avg_loss)
 
-        model.save()
-
+        model.eval()
         val_loss, val_acc = val(model, val_loader, criterion)
         vis.plot("val_loss", val_loss)
         vis.plot("val_acc", val_acc)
         vis.log(f"epoch: {epoch}/{opt.max_epoch}, lr: {lr:.6f}, train_loss: {train_avg_loss:.4f}, val_loss: {val_loss:.4f}, val_acc: {val_acc:.4f}")
+
+        # 只保存当前最佳accuracy的模型
+        if val_acc > best_val_acc:
+            best_val_acc = val_acc
+            model.save()
 
         # 如果损失变大，那就降低学习率
         if train_avg_loss > previous_loss:
@@ -83,7 +88,6 @@ def val(model: nn.Module, dataloader: DataLoader, criterion) -> Tuple[float, flo
     """
     验证
     """
-    model.eval()
     valid_total_loss = 0.0
     total, correct = 0, 0
     with torch.no_grad():
