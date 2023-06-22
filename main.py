@@ -45,51 +45,61 @@ def train(**kwargs):
 
     previous_loss = 0.0
     best_val_acc = 0.0
-
     for epoch in range(1, opt.max_epoch + 1):
         model.train()
-        train_total_loss = 0.0
-        train_avg_loss = 0.0
-        for i, (X, y) in enumerate(train_loader, 1):
-            X, y = X.to(opt.device), y.to(opt.device)
-
-            out = model(X)
-            loss = criterion(out, y)
-
-            loss.backward()
-            optimizer.step()
-            optimizer.zero_grad()
-
-            train_total_loss += loss.item()
-            if i % opt.print_freq == 0:
-                train_avg_loss = train_total_loss / i
-                vis.plot("loss", train_avg_loss)
+        train_loss = _train_epoch(model, train_loader, criterion, optimizer, vis)
 
         model.eval()
-        val_loss, val_acc = val(model, val_loader, criterion)
-        vis.plot("val_loss", val_loss)
-        vis.plot("val_acc", val_acc)
-        vis.log(f"epoch: {epoch}/{opt.max_epoch}, lr: {lr:.6f}, train_loss: {train_avg_loss:.4f}, val_loss: {val_loss:.4f}, val_acc: {val_acc:.4f}")
+        val_loss, val_accuracy = _val_epoch(model, val_loader, criterion)
+
+        vis.plot("epoch_train_loss", train_loss)
+        vis.plot("epoch_val_loss", val_loss)
+        vis.plot("epoch_val_acc", val_accuracy)
+        vis.log(f"epoch: {epoch}/{opt.max_epoch}, lr: {lr:.6f}, "
+                f"train_loss: {train_loss:.4f}, val_loss: {val_loss:.4f}, val_acc: {val_accuracy:.4f}")
 
         # 只保存当前最佳accuracy的模型
-        if val_acc > best_val_acc:
-            best_val_acc = val_acc
+        if val_accuracy > best_val_acc:
+            best_val_acc = val_accuracy
             model.save()
 
         # 如果损失变大，那就降低学习率
-        if train_avg_loss > previous_loss:
+        if train_loss > previous_loss:
             lr *= opt.lr_decay
             for param_group in optimizer.param_groups:
                 param_group['lr'] = lr
-        previous_loss = train_avg_loss
+        previous_loss = train_loss
 
 
-def val(model: nn.Module, dataloader: DataLoader, criterion) -> Tuple[float, float]:
+def _train_epoch(model: nn.Module, dataloader: DataLoader, criterion, optimizer: torch.optim.Optimizer,
+                 vis: Visualizer) -> float:
     """
-    验证
+    训练-单个epoch
     """
-    valid_total_loss = 0.0
-    total, correct = 0, 0
+    train_total_loss = 0.0
+    for i, (X, y) in enumerate(dataloader, 1):
+        X, y = X.to(opt.device), y.to(opt.device)
+
+        out = model(X)
+        loss = criterion(out, y)
+
+        loss.backward()
+        optimizer.step()
+        optimizer.zero_grad()
+
+        train_total_loss += loss.item()
+        if i % opt.print_freq == 0:
+            vis.plot("freq_loss", train_total_loss / i)
+    train_avg_loss = train_total_loss / len(dataloader)
+    return train_avg_loss
+
+
+def _val_epoch(model: nn.Module, dataloader: DataLoader, criterion) -> Tuple[float, float]:
+    """
+    验证-单个epoch
+    """
+    val_total_loss = 0.0
+    val_total, val_correct = 0, 0
     with torch.no_grad():
         for i, (X, y) in enumerate(dataloader, 1):
             X, y = X.to(opt.device), y.to(opt.device)
@@ -98,13 +108,13 @@ def val(model: nn.Module, dataloader: DataLoader, criterion) -> Tuple[float, flo
             loss = criterion(out, y)
 
             _, preds = torch.max(out, 1)
-            total += y.size(0)
-            correct += (preds == y).sum().item()
+            val_total += y.size(0)
+            val_correct += (preds == y).sum().item()
 
-            valid_total_loss += loss.item()
-    avg_loss = valid_total_loss / len(dataloader)
-    accuracy = 100 * correct / total
-    return avg_loss, accuracy
+            val_total_loss += loss.item()
+    val_avg_loss = val_total_loss / len(dataloader)
+    val_accuracy = 100 * val_correct / val_total
+    return val_avg_loss, val_accuracy
 
 
 def test(**kwargs):
@@ -135,11 +145,11 @@ def test(**kwargs):
             out = model(X)
             _, preds = torch.max(out, 1)
 
-            local_df = pd.DataFrame(data={
+            pd.DataFrame(data={
                 'id': y,
                 'label': preds.tolist()
-            })
-            local_df.to_csv(opt.result_file, mode="a", index=False)
+            }).to_csv(opt.result_file, mode="a", header=i == 1, index=False)
+
 
 def help():
     """
