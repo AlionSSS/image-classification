@@ -5,23 +5,24 @@
   - [ ] SqueezeNet
   - [x] LeNet
 
-## 环境
+## Environment
 - 主要使用 `PyTorch 1.12.1`、`Python 3.7.12`
 - 依赖库详见 [requirements.txt](requirements.txt)
 
-## 数据集 Dogs vs. Cats Redux: Kernels Edition
-1. 请先下载数据集 [dogs-vs-cats](https://www.kaggle.com/competitions/dogs-vs-cats-redux-kernels-edition/data) 
-2. 将下载好的文件`dogs-vs-cats-redux-kernels-edition.zip`放置项目根目录
-3. 执行项目根目录下的 [download_extract_data.py](download_extract_data.py)，完成解压
+## Dataset 
+- **Dogs vs. Cats Redux: Kernels Edition**
+  1. 请先下载数据集 [dogs-vs-cats](https://www.kaggle.com/competitions/dogs-vs-cats-redux-kernels-edition/data) 
+  2. 将下载好的文件`dogs-vs-cats-redux-kernels-edition.zip`放置项目根目录
+  3. 执行项目根目录下的 [download_extract_data.py](download_extract_data.py)，完成解压
 
 
-## 帮助信息
+## Help Info
 - 命令示例
 ```shell
 python main.py help
 ```
 
-## 启动 Visdom
+## Run Visdom
 - 命令示例
 ```shell
 # 阻塞启动
@@ -34,7 +35,7 @@ nohup python -m visdom.server &
 - 在网页选择环境`default`，通过图表查看训练过程的`loss`、`accuracy`、`log`
 ![screenshot-2023-06-22 131844.png](resource%2Fscreenshot-2023-06-22%20131844.png)
 
-## 模型训练
+## Model Train
 - 命令示例
 ```shell
 python main.py train \
@@ -46,7 +47,7 @@ python main.py train \
 --lr=0.005
 ```
 
-## 模型测试
+## Model Test
 - 命令示例
 ```shell
 python main.py train \
