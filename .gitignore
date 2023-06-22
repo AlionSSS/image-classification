@@ -160,3 +160,4 @@ cython_debug/
 .idea/
 /dogs-vs-cats-redux-kernels-edition/
 /dogs-vs-cats-redux-kernels-edition.zip
+/checkpoints/*.pth
