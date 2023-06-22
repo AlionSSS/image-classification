@@ -4,7 +4,7 @@ from torch import nn
 from torch.nn import functional as F
 
 
-class LetNet(BasicModule):
+class LeNet(BasicModule):
 
     def __init__(self):
         super().__init__()

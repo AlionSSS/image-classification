@@ -3,7 +3,7 @@
 - models 
   - [x] ResNet34
   - [ ] SqueezeNet
-  - [ ] LeNet
+  - [x] LeNet
 
 ## 环境
 - 主要使用 `PyTorch 1.12.1`、`Python 3.7.12`
@@ -39,7 +39,7 @@ nohup python -m visdom.server &
 ```shell
 python main.py train \
 --model='ResNet34' \
---load-model-path='checkpoints/resnet34_20230621_233902.pth' \
+# --load-model-path='checkpoints/resnet34_20230621_233902.pth' \
 --train-data-root='dogs-vs-cats-redux-kernels-edition/train' \
 --max-epoch=30 \
 --batch-size=64 \
