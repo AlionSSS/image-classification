@@ -3,6 +3,7 @@
 - models 
   - [x] ResNet34
   - [ ] SqueezeNet
+  - [ ] LeNet
 
 ## 环境
 - 主要使用 `PyTorch 1.12.1`、`Python 3.7.12`
