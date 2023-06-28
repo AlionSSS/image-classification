@@ -2,7 +2,7 @@
 - This is an AI project about image-classification.
 - models 
   - [x] ResNet34
-  - [ ] SqueezeNet
+  - [x] SqueezeNet
   - [x] LeNet
 
 ## Environment

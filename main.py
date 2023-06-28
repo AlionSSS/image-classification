@@ -41,7 +41,7 @@ def train(**kwargs):
 
     lr = opt.lr
     criterion = nn.CrossEntropyLoss()
-    optimizer = torch.optim.Adam(model.parameters(), lr=lr, weight_decay=opt.weight_decay)
+    optimizer = model.get_optimizer(lr, opt.weight_decay)
 
     previous_loss = 0.0
     best_val_acc = 0.0
