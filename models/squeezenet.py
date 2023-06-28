@@ -8,7 +8,6 @@ class SqueezeNet(BasicModule):
 
     def __init__(self, num_classes=2):
         super(SqueezeNet, self).__init__()
-        self.model_name = 'squeezenet'
         self.model = squeezenet1_1(weights=SqueezeNet1_1_Weights.DEFAULT)
         # 修改分类数 1000 -> 2
         self.model.num_classes = num_classes
