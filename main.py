@@ -8,6 +8,7 @@ from torch import nn
 import fire
 import inspect
 import pandas as pd
+import tqdm
 
 import models
 from config import DefaultConfig, ExtDefaultConfig
@@ -46,11 +47,12 @@ def train(**kwargs):
     previous_loss = 0.0
     best_val_acc = 0.0
     for epoch in range(1, opt.max_epoch + 1):
+        epoch_flag = f"{epoch}/{opt.max_epoch}"
         model.train()
-        train_loss = _train_epoch(model, train_loader, criterion, optimizer, vis)
+        train_loss = _train_epoch(epoch_flag, model, train_loader, criterion, optimizer, vis)
 
         model.eval()
-        val_loss, val_accuracy = _val_epoch(model, val_loader, criterion)
+        val_loss, val_accuracy = _val_epoch(epoch_flag, model, val_loader, criterion)
 
         vis.plot("epoch_train_loss", train_loss)
         vis.plot("epoch_val_loss", val_loss)
@@ -71,13 +73,14 @@ def train(**kwargs):
         previous_loss = train_loss
 
 
-def _train_epoch(model: nn.Module, dataloader: DataLoader, criterion, optimizer: torch.optim.Optimizer,
+def _train_epoch(epoch_flag: str, model: nn.Module, dataloader: DataLoader, criterion, optimizer: torch.optim.Optimizer,
                  vis: Visualizer) -> float:
     """
     训练-单个epoch
     """
     train_total_loss = 0.0
-    for i, (X, y) in enumerate(dataloader, 1):
+    progress = tqdm.tqdm(dataloader, desc=f"Train... [Epoch {epoch_flag}]")
+    for i, (X, y) in enumerate(progress, 1):
         X, y = X.to(opt.device), y.to(opt.device)
 
         out = model(X)
@@ -94,24 +97,25 @@ def _train_epoch(model: nn.Module, dataloader: DataLoader, criterion, optimizer:
     return train_avg_loss
 
 
-def _val_epoch(model: nn.Module, dataloader: DataLoader, criterion) -> Tuple[float, float]:
+@torch.no_grad()
+def _val_epoch(epoch_flag: str,model: nn.Module, dataloader: DataLoader, criterion) -> Tuple[float, float]:
     """
     验证-单个epoch
     """
     val_total_loss = 0.0
     val_total, val_correct = 0, 0
-    with torch.no_grad():
-        for i, (X, y) in enumerate(dataloader, 1):
-            X, y = X.to(opt.device), y.to(opt.device)
+    progress = tqdm.tqdm(dataloader, desc=f"Valid... [Epoch {epoch_flag}]")
+    for i, (X, y) in enumerate(progress, 1):
+        X, y = X.to(opt.device), y.to(opt.device)
 
-            out = model(X)
-            loss = criterion(out, y)
+        out = model(X)
+        loss = criterion(out, y)
 
-            _, preds = torch.max(out, 1)
-            val_total += y.size(0)
-            val_correct += (preds == y).sum().item()
+        _, preds = torch.max(out, 1)
+        val_total += y.size(0)
+        val_correct += (preds == y).sum().item()
 
-            val_total_loss += loss.item()
+        val_total_loss += loss.item()
     val_avg_loss = val_total_loss / len(dataloader)
     val_accuracy = 100 * val_correct / val_total
     return val_avg_loss, val_accuracy
@@ -139,16 +143,21 @@ def test(**kwargs):
         os.remove(opt.result_file)
 
     model.eval()
-    with torch.no_grad():
-        for i, (X, y) in enumerate(test_loader, 1):
-            X = X.to(opt.device)
-            out = model(X)
-            _, preds = torch.max(out, 1)
+    _test_epoch(model, test_loader)
 
-            pd.DataFrame(data={
-                'id': y,
-                'label': preds.tolist()
-            }).to_csv(opt.result_file, mode="a", header=i == 1, index=False)
+
+@torch.no_grad()
+def _test_epoch(model, dataloader):
+    progress = tqdm.tqdm(dataloader, desc="Test ...")
+    for i, (X, y) in enumerate(progress, 1):
+        X = X.to(opt.device)
+        out = model(X)
+        _, preds = torch.max(out, 1)
+
+        pd.DataFrame(data={
+            'id': y,
+            'label': preds.tolist()
+        }).to_csv(opt.result_file, mode="a", header=i == 1, index=False)
 
 
 def help():
