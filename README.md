@@ -27,9 +27,10 @@ python main.py help
 - 先启动 Visdom Server，见 [Run Visdom](#run-visdom)
 - 命令示例
 ```shell
+# Linux
 python main.py train \
 --model='ResNet34' \
-# --load-model-path='checkpoints/resnet34_20230621_233902.pth' \
+# --load-model-path='checkpoints/ResNet34_20230628_221458.pth' \
 --train-data-root='dogs-vs-cats-redux-kernels-edition/train' \
 --max-epoch=30 \
 --batch-size=64 \
@@ -39,9 +40,10 @@ python main.py train \
 ## Model Test
 - 命令示例
 ```shell
+# Linux
 python main.py train \
 --model='ResNet34' \
---load-model-path='checkpoints/resnet34_20230621_233902.pth' \
+--load-model-path='checkpoints/ResNet34_20230628_221458.pth' \
 --test-data-root='dogs-vs-cats-redux-kernels-edition/test' \
 --batch-size=64
 ```
