@@ -61,5 +61,5 @@ python -m visdom.server
 nohup python -m visdom.server &
 ```
 - 启动后即可使用Web浏览器访问 [http://localhost:8097](http://localhost:8097)
-- 在网页选择环境`default`，通过图表查看训练过程中的`loss`、`accuracy`、`log`
+- 在网页选择环境`image-classification`，通过图表查看训练过程中的`loss`、`accuracy`、`log`
 ![screenshot-2023-06-22 131844.png](resource%2Fscreenshot-2023-06-22%20131844.png)
