@@ -4,7 +4,7 @@ import torch.cuda
 
 
 class DefaultConfig(object):
-    visdom_env = "default"  # Visdom的环境
+    visdom_env = "image-classification"  # Visdom的环境
     model = "SqueezeNet"  # 使用的模型
     train_data_root = "dataset/dogs-vs-cats-redux-kernels-edition/train"  # 训练集的路径
     test_data_root = "dataset/dogs-vs-cats-redux-kernels-edition/test"  # 测试集的路径
@@ -22,6 +22,8 @@ class DefaultConfig(object):
     lr = 0.005  # 学习率
     lr_decay = 0.95  # 学习率衰减
     weight_decay = 1e-4
+
+    num_classes = 2  # 分类数量
 
 
 class ExtDefaultConfig(DefaultConfig):

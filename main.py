@@ -30,7 +30,7 @@ def train(**kwargs):
 
     vis = Visualizer(opt.visdom_env)
 
-    model = getattr(models, opt.model)()
+    model = getattr(models, opt.model)(opt.num_classes)
     if opt.load_model_path:
         model.load(opt.load_model_path)
     model = model.to(opt.device)

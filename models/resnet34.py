@@ -28,7 +28,7 @@ class ResidualBlock(nn.Module):
 
 class ResNet34(BasicModule):
 
-    def __init__(self):
+    def __init__(self, num_classes=2):
         super().__init__()
         self.pre = nn.Sequential(
             nn.Conv2d(3, 64, 7, 2, 3, bias=False),
@@ -40,7 +40,7 @@ class ResNet34(BasicModule):
         self.layer2 = self._make_layer(64, 128, 4, 2, True)
         self.layer3 = self._make_layer(128, 256, 6, 2, True)
         self.layer4 = self._make_layer(256, 512, 3, 2, True)
-        self.fc = nn.Linear(512, 2)
+        self.fc = nn.Linear(512, num_classes)
 
     def _make_layer(self, in_channels, out_channels, block_num, stride, is_shortcut):
         shortcut = None
