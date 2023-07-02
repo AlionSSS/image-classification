@@ -35,10 +35,7 @@ def train(**kwargs):
     val_data = DogCatDataset(root_path=opt.train_data_root, mode="val")
     val_loader = DataLoader(val_data, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_worker)
 
-    model = getattr(models, opt.model)(opt.num_classes)
-    if opt.load_model_path:
-        model.load(opt.load_model_path)
-    model = model.to(opt.device)
+    model = _get_model()
 
     lr = opt.lr
     criterion = nn.CrossEntropyLoss()
@@ -134,16 +131,21 @@ def test(**kwargs):
     test_data = DogCatDataset(root_path=opt.test_data_root, mode="test")
     test_loader = DataLoader(test_data, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_worker)
 
-    model = getattr(models, opt.model)()
-    if opt.load_model_path:
-        model.load(opt.load_model_path)
-    model.to(opt.device)
+    model = _get_model()
 
     if os.path.isfile(opt.result_file):
         os.remove(opt.result_file)
 
     model.eval()
     _test_epoch(model, test_loader)
+
+
+def _get_model():
+    model = getattr(models, opt.model)()
+    if opt.load_model_path:
+        model.load(opt.load_model_path)
+    model.to(opt.device)
+    return model
 
 
 @torch.no_grad()
