@@ -6,8 +6,8 @@ import torch.cuda
 class DefaultConfig(object):
     visdom_env = "default"  # Visdom的环境
     model = "SqueezeNet"  # 使用的模型
-    train_data_root = "dogs-vs-cats-redux-kernels-edition/train"  # 训练集的路径
-    test_data_root = "dogs-vs-cats-redux-kernels-edition/test"  # 测试集的路径
+    train_data_root = "dataset/dogs-vs-cats-redux-kernels-edition/train"  # 训练集的路径
+    test_data_root = "dataset/dogs-vs-cats-redux-kernels-edition/test"  # 测试集的路径
     load_model_path = None  # 加载预训练模型的路径，None表示不加载
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')  # 使用的设备，cpu或cuda

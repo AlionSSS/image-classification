@@ -25,10 +25,14 @@ def download_extract_data():
     """
 
     download_url = "https://www.kaggle.com/competitions/dogs-vs-cats-redux-kernels-edition/data"
-    data_path = "./dogs-vs-cats-redux-kernels-edition"
+    dataset_path = "./dataset"
+    data_path = dataset_path + "/dogs-vs-cats-redux-kernels-edition"
     data_zip_path = "./dogs-vs-cats-redux-kernels-edition.zip"
     data_train_zip_path = os.path.join(data_path, "train.zip")
     data_test_zip_path = os.path.join(data_path, "test.zip")
+
+    if not os.path.exists(dataset_path) or not os.path.isdir(dataset_path):
+        os.mkdir(dataset_path)
 
     if not os.path.exists(data_path):
         # 解压
