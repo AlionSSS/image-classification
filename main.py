@@ -30,15 +30,15 @@ def train(**kwargs):
 
     vis = Visualizer(opt.visdom_env)
 
-    model = getattr(models, opt.model)(opt.num_classes)
-    if opt.load_model_path:
-        model.load(opt.load_model_path)
-    model = model.to(opt.device)
-
     train_data = DogCatDataset(root_path=opt.train_data_root, mode="train")
     train_loader = DataLoader(train_data, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_worker)
     val_data = DogCatDataset(root_path=opt.train_data_root, mode="val")
     val_loader = DataLoader(val_data, batch_size=opt.batch_size, shuffle=True, num_workers=opt.num_worker)
+
+    model = getattr(models, opt.model)(opt.num_classes)
+    if opt.load_model_path:
+        model.load(opt.load_model_path)
+    model = model.to(opt.device)
 
     lr = opt.lr
     criterion = nn.CrossEntropyLoss()
