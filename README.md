@@ -14,7 +14,9 @@
   1. 请先下载数据集 [dogs-vs-cats](https://www.kaggle.com/competitions/dogs-vs-cats-redux-kernels-edition/data) 
   2. 将下载好的文件`dogs-vs-cats-redux-kernels-edition.zip`放置项目根目录
   3. 执行项目根目录下的 [download_extract_data.py](download_extract_data.py)，完成解压
+- 目录结构如下
 
+![screenshot-2023-07-02 120411.png](resource%2Fscreenshot-2023-07-02%20120411.png)
 
 ## Help Info
 - 命令示例
