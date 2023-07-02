@@ -31,7 +31,7 @@ python main.py help
 python main.py train \
 --model='ResNet34' \
 # --load-model-path='checkpoints/ResNet34_20230628_221458.pth' \
---train-data-root='dogs-vs-cats-redux-kernels-edition/train' \
+--train-data-root='dataset/dogs-vs-cats-redux-kernels-edition/train' \
 --max-epoch=30 \
 --batch-size=64 \
 --lr=0.005
@@ -44,7 +44,7 @@ python main.py train \
 python main.py train \
 --model='ResNet34' \
 --load-model-path='checkpoints/ResNet34_20230628_221458.pth' \
---test-data-root='dogs-vs-cats-redux-kernels-edition/test' \
+--test-data-root='dataset/dogs-vs-cats-redux-kernels-edition/test' \
 --batch-size=64
 ```
 
