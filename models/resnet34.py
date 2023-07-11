@@ -33,7 +33,7 @@ class ResidualBlock(nn.Module):
         )
 
 
-class ResNet34(nn.Module):
+class ResNet34(BasicModule):
 
     def __init__(self, num_classes=2):
         super().__init__()
