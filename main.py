@@ -144,8 +144,7 @@ def _get_model():
     model = getattr(models, opt.model)()
     if opt.load_model_path:
         model.load(opt.load_model_path)
-    model.to(opt.device)
-    return model
+    return model.to(opt.device)
 
 
 @torch.no_grad()

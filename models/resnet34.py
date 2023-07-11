@@ -52,7 +52,7 @@ class ResNet34(BasicModule):
 
     def _make_layer(self, in_channels, out_channels, block_num, stride):
         layers = [ResidualBlock(in_channels, out_channels, stride)]
-        for i in range(1, block_num):
+        for _ in range(block_num - 1):
             layers.append(ResidualBlock(out_channels, out_channels))
         return nn.Sequential(*layers)
 
