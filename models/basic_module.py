@@ -20,6 +20,7 @@ class BasicModule(nn.Module):
     def save(self, name=None):
         if not name:
             name = time.strftime(self.model_name + "_%Y%m%d_%H%M%S.pth")
+        checkpoints_path = "checkpoints"
         if not os.path.exists(checkpoints_path) or not os.path.isdir(checkpoints_path):
             os.mkdir(checkpoints_path)
         torch.save(self.state_dict(), os.path.join(checkpoints_path, name))
